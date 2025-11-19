@@ -6,6 +6,7 @@
 class IR_Array {
 public:
     IR_Array(uint8_t count);
+    ~IR_Array();  // Destructor
     void setup(const uint8_t* pins = nullptr, int k = 2);  // Setup (pin assignment + K value)
     
     void CalibrateSensors(uint16_t ctime = 5000); // Main functions
