@@ -17,6 +17,19 @@ public:
     void Read(uint8_t mode = 0, uint8_t pd = 0);
     void DebugData();
 
+    // Getters for sensor statistics
+    const std::vector<float>& getMean() const { return Mean; }
+    const std::vector<float>& getStdDev() const { return Std_Dev; }
+    const std::vector<float>& getVariance() const { return Variance; }
+    const std::vector<float>& getRange() const { return Range; }
+    const std::vector<float>& getSensorStatus() const { return SensorStatus; }
+    const std::vector<float>& getSum() const { return Sum; }
+    const std::vector<uint16_t>& getCount() const { return Count; }
+    const std::vector<float>& getSumSq() const { return Sum_Sq; }
+    const std::vector<float>& getSensorMin() const { return SensorMin; }
+    const std::vector<float>& getSensorMax() const { return SensorMax; }
+    const std::vector<uint8_t>& getSensorPins() const { return SensorPins; }
+
 private:
     // Sensor Properties
     const uint8_t SensorCount;       // Number of sensors
