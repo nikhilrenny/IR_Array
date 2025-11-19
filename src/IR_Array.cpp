@@ -1,27 +1,29 @@
 #include "IR_Array.h"
 #include <Arduino.h> 
-#include <vector>
 
-IR_Array::IR_Array(uint8_t count)  // All arrays are automatically initialized using vectors
-    : SensorCount(count),
-      SensorPins(count),
-      Count(count, 0),
-      Sum(count, 0.0f),
-      Sum_Sq(count, 0.0f),
-      SensorMin(count, 1023.0f),   // Initialize minimum readings to max possible ADC value (1023)
-      SensorMax(count, 0.0f),
-      Range(count, 0.0f),
-      Mean(count, 0.0f),
-      Variance(count, 0.0f),
-      Std_Dev(count, 0.0f),
-      SensorStatus(count, 0.0f),
-      K(2),   // Default Gaussian threshold multiplier
-      Sum_Std_Dev(0.0f)
-{}
+IR_Array::IR_Array(uint8_t count) : SensorCount(count),
+{
+    // Allocate memory for arrays
+    SensorPins  = new uint8_t[SensorCount];
+    Count       = new uint16_t[SensorCount]();
+    Sum         = new float[SensorCount]();
+    Sum_Sq      = new float[SensorCount]();
+    SensorMin   = new float[SensorCount];
+    SensorMax   = new float[SensorCount]();
+    Range       = new float[SensorCount]();
+    Mean        = new float[SensorCount]();
+    Variance    = new float[SensorCount]();
+    Std_Dev     = new float[SensorCount]();
+    SensorStatus= new float[SensorCount]();
 
-void IR_Array::setup(const std::vector<uint8_t>& pins, int k) {
+    for (uint8_t i = 0; i < SensorCount; i++) { SensorMin[i] = 1023.0f; }// Initialize minimum readings to max possible ADC value (1023)
+    K = 2; // Default Gaussian threshold multiplier
+    Sum_Std_Dev = 0;
+}
+
+void IR_Array::setup(const uint8_t* pins, int k) {
   K = k;
-  if (!pins.empty()) {for (uint8_t i = 0; i < SensorCount; i++) {SensorPins[i] = pins[i];}}  // Use provided pin mapping
+  if (pins != nullptr) {for (uint8_t i = 0; i < SensorCount; i++) {SensorPins[i] = pins[i];}}  // Use provided pin mapping
   else {for (uint8_t i = 0; i < SensorCount; i++){SensorPins[i] = A0 + i;}}  // Default pin mapping: A0, A1, A2, ...
 }
 
