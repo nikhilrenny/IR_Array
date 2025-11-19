@@ -61,9 +61,8 @@ This function must be called **before calibration or reading** to ensure the sen
 
 #### Example:
 
-Sigma (K) sets the tolerance range for sensor health based on a Gaussian distribution.
-
 ```cpp
+IR_Array ir(8);
 ir.setup();  // deafault A0 to A7
 
 uint8_t pins8[8] = {A0, A1, A2, A3, A4, A5, A6, A7};
@@ -205,7 +204,7 @@ Set `Serial.begin(500000)` or higher for reliable readings.
 
 ---
 
-## Examples
+## Example
 
 ```cpp
 #include <IR_Array.h>
@@ -214,7 +213,7 @@ uint8_t pins[4] = {A0, A1, A2, A3};
 IR_Array ir(4);
 
 void setup() {
-  Serial.begin(19200);
+  Serial.begin(912000);
   ir.setup(pins);
   ir.CalibrateSensors();
 }
