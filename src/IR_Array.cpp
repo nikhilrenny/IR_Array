@@ -155,4 +155,17 @@ void IR_Array::Read(uint8_t mode, uint8_t pd ){
   }
 }
 
-
+IR_Array::~IR_Array() {
+    // Free all dynamically allocated arrays
+    delete[] SensorPins;
+    delete[] Count;
+    delete[] Sum;
+    delete[] Sum_Sq;
+    delete[] SensorMin;
+    delete[] SensorMax;
+    delete[] Range;
+    delete[] Mean;
+    delete[] Variance;
+    delete[] Std_Dev;
+    delete[] SensorStatus;
+}
