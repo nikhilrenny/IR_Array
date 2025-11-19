@@ -1,5 +1,6 @@
 #include "IR_Array.h"
 #include <Arduino.h> 
+#include <vector>
 
 IR_Array::IR_Array(uint8_t count)  // All arrays are automatically initialized using vectors
     : SensorCount(count),
