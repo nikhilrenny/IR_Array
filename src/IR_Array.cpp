@@ -1,4 +1,5 @@
 #include "IR_Array.h"
+#include <Arduino.h> 
 
 IR_Array::IR_Array(uint8_t count) : SensorCount(count) { // // Constructor: Initialize an IR_Array with a specified number of sensors
 
