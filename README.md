@@ -102,15 +102,15 @@ The `Read()` function provides multiple ways to process and interpret the IR sen
 
    * Reads each sensor’s current analog value without modification.
    * If `pd = 1`, the values are printed to the serial monitor; if `pd = 0`, no output is printed.
-2. **Filtered Data (mode = 2):**
+2. **Normalized Data (mode = 2):**
 
    * Normalizes readings using each sensor’s **mean** and **standard deviation**:
 
-     NormalizedValue=SensorValue−MeanStd_Dev\text{NormalizedValue} = \frac{\text{SensorValue} - \text{Mean}}{\text{Std\_Dev}}NormalizedValue=Std_DevSensorValue−Mean
+     NormalizedValue = (SensorValue−Mean)/Std_Dev
    * `pd` controls whether these filtered values are printed.
-3. **Normalized Data (mode = 3):**
+3. **Adaptive Binary Data (mode = 3):**
 
-   * Performs **dynamic normalization**: readings are mapped to `0` or `1` based on their deviation from the mean.
+   * Uses adaptive deviation analysis to map normalized readings into `0` or `1` depending on whether they fall above or below the dynamic threshold.
    * `pd` determines whether the binary values are printed.
 4. **Position / Default Mode (any other mode):**
 
