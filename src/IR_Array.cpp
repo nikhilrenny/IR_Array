@@ -1,29 +1,27 @@
 #include "IR_Array.h"
 
-#include "IR_Array.h"
+IR_Array::IR_Array(uint8_t count) : SensorCount(count) { // // Constructor: Initialize an IR_Array with a specified number of sensors
 
-IR_Array::IR_Array(uint8_t count) : SensorCount(count) {
-
-  SensorPins   = new uint8_t[count];
-  Count        = new uint16_t[count]();
-  Sum          = new float[count]();
-  Sum_Sq       = new float[count]();
-  SensorMin    = new float[count]();
-  SensorMax    = new float[count]();
-  Range        = new float[count]();
-  Mean         = new float[count]();
-  Variance     = new float[count]();
-  Std_Dev      = new float[count]();
-  SensorStatus = new float[count]();
-  for (uint8_t i = 0; i < count; i++) {SensorMin[i] = 1023;}
-  K = 2;
-  Sum_Std_Dev = 0;
+  // All arrays are automatically initialized using vectors
+    SensorPins(sensorCount),
+    Count(sensorCount, 0),
+    Sum(sensorCount, 0.0f),
+    Sum_Sq(sensorCount, 0.0f),
+    SensorMin(sensorCount, 1023.0f),  // Initialize minimum readings to max possible ADC value (1023)
+    SensorMax(sensorCount, 0.0f),
+    Range(sensorCount, 0.0f),
+    Mean(sensorCount, 0.0f),
+    Variance(sensorCount, 0.0f),
+    Std_Dev(sensorCount, 0.0f),
+    SensorStatus(sensorCount, 0.0f),
+    K(2),    // Default Gaussian threshold multiplier
+    Sum_Std_Dev(0.0f)
 }
 
 void IR_Array::setup(const uint8_t* pins, int k) {
   K = k;
-  if (pins != nullptr) {for (uint8_t i = 0; i < SensorCount; i++) {SensorPins[i] = pins[i];}}
-  else {for (uint8_t i = 0; i < SensorCount; i++){SensorPins[i] = A0 + i;}}
+  if (pins != nullptr) {for (uint8_t i = 0; i < SensorCount; i++) {SensorPins[i] = pins[i];}}  // Use provided pin mapping
+  else {for (uint8_t i = 0; i < SensorCount; i++){SensorPins[i] = A0 + i;}}  // Default pin mapping: A0, A1, A2, ...
 }
 
 void IR_Array::DebugData() {
@@ -62,7 +60,7 @@ void IR_Array::CalibrateSensors(uint16_t ctime){
       if (SensorValue < SensorMin[i]) {SensorMin[i] = SensorValue;}// record the minimum sensor value
     }
   }
-  for(uint8_t i = 0; i < SensorCount; i++){   // Statistics
+  for(uint8_t i = 0; i < SensorCount; i++){   // Compute statistics for each sensor
     Mean[i] = Sum[i] / Count[i];
     Variance[i] = (Sum_Sq[i] / Count[i]) - (Mean[i] * Mean[i]);        
     Std_Dev[i] = sqrt(Variance[i]);
@@ -70,13 +68,13 @@ void IR_Array::CalibrateSensors(uint16_t ctime){
     Sum_Std_Dev += Std_Dev[i];
   }
   
-  for(uint8_t i = 0; i < SensorCount; i++){     // Sensor health - Gaussian distribution - Bell Curve
+  for(uint8_t i = 0; i < SensorCount; i++){     // Evaluate sensor health using Gaussian distribution (bell curve)
     float tinyValue = Mean[i] - K*Std_Dev[i]; 
     float largeValue = Mean[i] + K*Std_Dev[i];
     float SensorValue = analogRead(SensorPins[i]); 
-    if(SensorValue < tinyValue){SensorStatus[i] = 0;}
-    else if(SensorValue > largeValue){SensorStatus[i] = 0.5;}
-    else {SensorStatus[i] = 1;}
+    if(SensorValue < tinyValue){SensorStatus[i] = 0;}  // Below normal range
+    else if(SensorValue > largeValue){SensorStatus[i] = 0.5;}  // Above normal range
+    else {SensorStatus[i] = 1;}    // Normal
   }
   Serial.println("Calibration complete!");
 }
@@ -97,13 +95,13 @@ void IR_Array::Read(uint8_t mode, uint8_t pd ){
       if(pd == 1){Serial.println();} else { return; }
       break;
 
-    case 2: // filteredata
+    case 2: // z-score filtered readings
       for(uint8_t i = 0; i < SensorCount; i++){     
         float SensorValue = analogRead(SensorPins[i]);
-        float NormalizedValue = (SensorValue - Mean[i])/Std_Dev[i];
+        float zScore = (SensorValue - Mean[i])/Std_Dev[i];
         if(pd == 1){
           char buffer[12];
-          dtostrf(NormalizedValue, 8, 2, buffer);  // width=8, precision=2 dtostrf(float_value, width, precision, buffer)
+          dtostrf(zScore, 8, 2, buffer);  // width=8, precision=2 dtostrf(float_value, width, precision, buffer)
           Serial.print(buffer);
           Serial.print(" | ");
         }
@@ -112,15 +110,15 @@ void IR_Array::Read(uint8_t mode, uint8_t pd ){
       if(pd == 1){Serial.println();} else { return; }
       break;
     
-    case 3: // normalized data
+    case 3:  //  thresholded normalized readings
       for(uint8_t i = 0; i < SensorCount; i++){     // Dynamic Normalization
         float SensorValue = analogRead(SensorPins[i]);
-        float DyanmicNormalizedValue = (SensorValue - Mean[i])/Std_Dev[i];
-        if(DyanmicNormalizedValue < 0){ DyanmicNormalizedValue = 0;}
-        else {DyanmicNormalizedValue = 1;}
+        float zScore = (SensorValue - Mean[i])/Std_Dev[i];
+        if(zScore < 0){ zScore = 0;}
+        else {zScore = 1;}
         if(pd == 1){
           char buffer[12];
-          dtostrf(DyanmicNormalizedValue, 8, 2, buffer);  // width=8, precision=2 dtostrf(float_value, width, precision, buffer)
+          dtostrf(zScore, 8, 2, buffer);  // width=8, precision=2 dtostrf(float_value, width, precision, buffer)
           Serial.print(buffer);
           Serial.print(" | ");
         }
@@ -129,7 +127,7 @@ void IR_Array::Read(uint8_t mode, uint8_t pd ){
       if(pd == 1){Serial.println();} else { return; }
       break;
   
-    default:
+    default:    // Position left/center/right
       float Center = 0;
       uint8_t ActiveCount = 0;
       char* POS; // Move Position
