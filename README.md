@@ -1,6 +1,6 @@
 # IR_Array Library
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Platform](https://img.shields.io/badge/platform-Arduino-red)
+![Version](https://img.shields.io/badge/version-1.0.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) 
 
 **Author:** Nikhil Renny
 
@@ -32,12 +32,6 @@ git clone git@github.com:nikhilrenny/IR_Array.git
  ```cpp
 #include <IR_Array.h>
 ```
-The recommended method to install the **IR_Array** library is via the Arduino IDE Library Manager or through a package manager such as PlatformIO.
->
-> Alternatively, you can manually install the library by downloading it and extracting the files into a folder named `IR_Array` within your Arduino custom libraries directory, typically located at:
->
-> * **Windows:** `Documents\Arduino\libraries`
-> * **Linux/macOS:** `~/Documents/Arduino/libraries/`
 
 ---
 ## Library Initialization
