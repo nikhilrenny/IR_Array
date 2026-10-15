@@ -1,7 +1,4 @@
 # IR_Array Library
-
-**Author:** Nikhil Renny
-
 ---
 
 The **IR_Array** library enables efficient interfacing with multiple IR sensors. Designed primarily for Arduino, it also supports PlatformIO, ESP32/ESP8266, Teensy, and other platforms. Lightweight and scalable, it is ideal for projects requiring any number of IR sensors.
