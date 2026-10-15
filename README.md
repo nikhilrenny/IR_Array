@@ -1,7 +1,5 @@
 # IR_Array Library
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue) ![License](https://img.shields.io/badge/license-MIT-green) 
-
 **Author:** Nikhil Renny
 
 ---
@@ -18,20 +16,6 @@ The **IR_Array** library enables efficient interfacing with multiple IR sensors.
 - Detect the position of active sensors (Left, Center, Right)  
 - Easy debugging using `DebugData()` function  
 - Configurable number of sensors and pin assignments  
-
----
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone git@github.com:nikhilrenny/IR_Array.git
-```
-2. Include the library in your Arduino sketch:
- ```cpp
-#include <IR_Array.h>
-```
 
 ---
 ## Library Initialization
